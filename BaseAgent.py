@@ -24,6 +24,5 @@ class BaseAgent():
             return random.choice(max_actions)
    
     def get_alpha(self, state, action):
-        #Step size, so that each update to the Q-values is a fraction of the difference between the current Q-value and the target Q-value
-        #And since each TD method has to use that we can also use it for MC so that we have the same learning rate for all methods.
+        #Since each TD method has to use that we can also use it for MC(which would be the every visit approach) so that we have the same learning rate for all methods.
         return 1/(1+self.count_table[state][action])
