@@ -1,6 +1,8 @@
-class DoubleQLearningAgent():
-    def __init__(self,q_table_B):
-       self.q_table_B = q_table_B 
+import BaseAgent
+class DoubleQLearningAgent(BaseAgent):
+    def __init__(self,q_table,count_table,q_table_B):
+        super().__init__(q_table, count_table)
+        self.q_table_B = q_table_B 
     
     def update_q_value(self):
         pass

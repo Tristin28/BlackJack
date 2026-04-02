@@ -1,6 +1,7 @@
-class QLearningAgent():
-    def __init__(self):
-        pass
+import BaseAgent
+class QLearningAgent(BaseAgent):
+    def __init__(self,q_table,count_table):
+        super().__init__(q_table, count_table)
         
-    def update_q_value(self):
+    def update_q_value(self,state, action, reward, next_state):
         pass
