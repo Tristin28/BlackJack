@@ -2,12 +2,10 @@ from abc import ABC, abstractmethod
 import random
 class BaseAgent(ABC):
     #Note that state will be a tuple consisting of (player_sum, dealer_card, and usable_ace)
-    def __init__(self,q_table,count_table,alpha,gamma):
+    def __init__(self,q_table,count_table,gamma):
         self.q_table = q_table #Nested-dictionary to store the Q-values for each state-action pair
         self.count_table = count_table #Nested-dictionary to store the count of how many times each state-action pair has been visited
-        self.alpha = alpha #Step size, so that each update to the Q-values is a fraction of the difference between the current Q-value and the target Q-value
-        self.gamma = gamma #Discount factor, so that future rewards are discounted when updating the Q-values
-        
+        #self.gamma = gamma #Discount factor, so that future rewards are discounted when updating the Q-values
 
     def increment_count(self,state,action):
         #Since both tables are initialised with zeros as it is needed for TD methods, and doesnt effect MC, then i dont need any if conditions to check
@@ -33,7 +31,7 @@ class BaseAgent(ABC):
             max_actions = [action for (action, value) in self.q_table[state].items() if value == max_value]
             return random.choice(max_actions)
    
-    @abstractmethod
-    def update_q_value(self,state,action,reward,next_state):
-        #This method is abstract because each method updates the Q-values differently.
-        pass
+    def get_alpha(self, state, action):
+        #Step size, so that each update to the Q-values is a fraction of the difference between the current Q-value and the target Q-value
+        #And since each TD method has to use that we can also use it for MC so that we have the same learning rate for all methods.
+        return 1/(1+self.count_table[state][action])
