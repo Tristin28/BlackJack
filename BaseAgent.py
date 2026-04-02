@@ -15,12 +15,14 @@ class BaseAgent(ABC):
         self.count_table[state][action] += 1
         
     def choose_action(self,state,epsilon):
-        player_sum, _, _ = state
-        if player_sum < 12:
-            return 'hit'
-        if player_sum >= 21:
-            return 'stick'
         '''
+            Note that this is not done here so that forced rules stay in environment/training control logic because it doesnt necessarily have to do with the policy
+            player_sum, _, _ = state
+            if player_sum < 12:
+                return 'hit'
+            if player_sum == 21:
+                return 'stick'
+
             This function will represent the epsilon-greedy policy, i.e. it represents the policy improvement stage of the policy iteration algorithm
             it is shared among all other agents, because the same policy is required for all methods
         '''
