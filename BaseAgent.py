@@ -1,6 +1,5 @@
-from abc import ABC, abstractmethod
 import random
-class BaseAgent(ABC):
+class BaseAgent():
     #Note that state will be a tuple consisting of (player_sum, dealer_card, and usable_ace)
     def __init__(self,q_table,count_table,gamma):
         self.q_table = q_table #Nested-dictionary to store the Q-values for each state-action pair

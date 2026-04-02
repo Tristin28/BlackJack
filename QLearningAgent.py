@@ -1,4 +1,3 @@
-import random
 class QLearningAgent():
     #Note that state will be a tuple consisting of (player_sum, dealer_card, and usable_ace)
     def __init__(self,q_table,count_table):
