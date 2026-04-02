@@ -1,7 +1,7 @@
 import random
 class BaseAgent():
     #Note that state will be a tuple consisting of (player_sum, dealer_card, and usable_ace)
-    def __init__(self,q_table,count_table,gamma):
+    def __init__(self,q_table,count_table):
         self.q_table = q_table #Nested-dictionary to store the Q-values for each state-action pair
         self.count_table = count_table #Nested-dictionary to store the count of how many times each state-action pair has been visited
         #self.gamma = gamma #Discount factor, so that future rewards are discounted when updating the Q-values
