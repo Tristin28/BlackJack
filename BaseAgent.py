@@ -2,10 +2,9 @@ from abc import ABC, abstractmethod
 import random
 class BaseAgent(ABC):
     #Note that state will be a tuple consisting of (player_sum, dealer_card, and usable_ace)
-    def __init__(self,q_table,count_table,epsilon,alpha,gamma):
+    def __init__(self,q_table,count_table,alpha,gamma):
         self.q_table = q_table #Nested-dictionary to store the Q-values for each state-action pair
         self.count_table = count_table #Nested-dictionary to store the count of how many times each state-action pair has been visited
-        self.epsilon = epsilon #Exploration rate, since we are applying epsilon-greedy policy algorihtm
         self.alpha = alpha #Step size, so that each update to the Q-values is a fraction of the difference between the current Q-value and the target Q-value
         self.gamma = gamma #Discount factor, so that future rewards are discounted when updating the Q-values
         
