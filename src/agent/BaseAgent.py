@@ -31,7 +31,7 @@ class BaseAgent():
         if player_sum < 12:
             return 'hit'
         elif player_sum == 21:
-            return 'stick'
+            return 'stand'
         else:
             return self.choose_action(state, epsilon)
    

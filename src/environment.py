@@ -5,7 +5,7 @@ class Environment:
         self.deck = []
         self.player_hand = []
         self.dealer_hand = []
-        #self.reward = [] #I dont think it should be a list since it has to be returned after every action
+        self.reward = None
         self.__initialise_game()
 
     def __initialise_game(self):
@@ -59,7 +59,7 @@ class Environment:
     # Note: The RL policy is only used when the player's hand value is between 12 and 20.
     # If the value is less than 12, the player must HIT; if it is 21, the player must STAND.
     # The exceptions are raised to enforce these rules and prevent invalid actions when training the RL agent.
-    def hit(self, hand):
+    def __hit(self, hand):
         #Should this send an immediate reward of 0 and then when agent decides to stand it waits until outcome is sent?
         value, _ = self.__hand_value(hand)
 
@@ -75,7 +75,7 @@ class Environment:
         hand.append(card)
         return hand
     
-    def stand(self):
+    def __stand(self):
         value, _ = self.__hand_value(self.player_hand)
 
         if value < 12:
@@ -84,10 +84,29 @@ class Environment:
         
         self.__dealer_play() # After the player stands, the dealer will play
 
+    def step(self, action):
+        if action == 'hit':
+            self.__hit(self.player_hand)
+            reward = 0
+            done = False
+            # Check if player exceeds 21 after hitting
+            player_value, _ = self.__hand_value(self.player_hand)
+            if player_value > 21:
+                reward = -1
+                done = True
+                self.__outcome() # Determine outcome immediately if player exceeds 21
+        elif action == 'stand':
+            self.__stand()
+            reward, done = self.outcome # Outcome is determined after dealer plays
+        else:
+            raise ValueError("Invalid action. Action must be 'hit' or 'stand'.")
+        
+        return self.get_state(), reward, done
+
     def __dealer_play(self):
         print("Dealer plays...")
         while self.__hand_value(self.dealer_hand)[0] < 17: 
-            self.hit(self.dealer_hand)
+            self.__hit(self.dealer_hand)
             
         print("Dealer's hand:", self.dealer_hand)
 
@@ -100,15 +119,20 @@ class Environment:
         # Note: The flow of if statements is important here. We check for player bust first, then dealer bust, then compare values.
         # This ensures we correctly identify the outcome of the game based on the rules of blackjack.
         if player_value > 21:
-            self.reward = "Player loses (Exceeded 21), dealer wins.", -1
-        elif dealer_value > 21:            
-            self.reward= "Dealer loses (Exceeded 21), player wins.", 1
+            print("Player loses (Exceeded 21), dealer wins.")
+            self.outcome = -1
+        elif dealer_value > 21:
+            print("Dealer loses (Exceeded 21), player wins.")
+            self.outcome = 1
         elif player_value > dealer_value:
-            self.reward = "Player wins.", 1
+            print("Player wins.")
+            self.outcome = 1
         elif dealer_value > player_value:
-            self.reward = "Dealer wins.", -1
+            print("Dealer wins.")
+            self.outcome = -1
         elif player_value == dealer_value:
-            self.reward = "Draw.", 0
+            print("Draw.")
+            self.outcome = 0
 
     def get_state(self): # Returns the RL state
         player_value, usable_ace = self.__hand_value(self.player_hand)
@@ -119,13 +143,6 @@ class Environment:
         elif dealer_card == "A":
             dealer_card = 11
         return player_value, dealer_card, usable_ace
-    
-if __name__ == "__main__":
-    env = Environment()
-    player_value, dealer_card, usable_ace = env.get_state()
-    print("Initial player hand:", env.player_hand)
-    print("Initial dealer hand:", env.dealer_hand)
-    print("Initial state (player value, dealer card, usable ace):", env.get_state())
 
 
 '''

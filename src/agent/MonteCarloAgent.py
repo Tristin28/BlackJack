@@ -9,3 +9,13 @@ class MonteCarloAgent(BaseAgent):
     def exploring_starts(self):
         #This is another type of policy improvement method, which only MC is going to implement
         pass
+    
+    def training_loop(self, environment_instance, epsilon, episodes):
+        for episode in range(episodes):
+            state = environment_instance.get_state()
+            done = False
+            episode_history = [] # To store the sequence of (state, action, reward) for the episode
+
+            while not done:
+                action = self.get_action(state, epsilon)
+                
