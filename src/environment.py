@@ -185,7 +185,7 @@ def step(self, action):
 
         if action == "hit":
             self.hit(self.player_hand)
-            player_value, _ = self.__hand_value(self.player_hand)
+            player_value, _ = self.__hand_value(self.player_hand)[0]
 
             if player_value > 21:
                 self.__outcome()
@@ -195,6 +195,6 @@ def step(self, action):
 
         if action == "stick":
             self.stand()
-            reward = self.reward[1]
+            reward = self.reward
             return None, reward, True
 '''

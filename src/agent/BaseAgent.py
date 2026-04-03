@@ -9,7 +9,18 @@ class BaseAgent():
         #Since both tables are initialised with zeros as it is needed for TD methods, and doesnt effect MC, then i dont need any if conditions to check
         if state is not None and action is not None:
             self.count_table[state][action] += 1
-        
+    
+    def get_greedy_action_and_value(self, state, table):
+        '''
+            Helper function which will be used for both the epsilon-greedy policy and the greedy policy for Q-Learning and Double Q-Learning,
+            as it will return the action with the highest Q-value for a given state, and the value of that action.
+        '''
+        #Note even though time complexity is O(n) for max(), it is still efficient because it only iterates through 2 actions
+        max_value = max(table[state].values())
+        max_actions = [action for action, value in table[state].items() if value == max_value]
+        best_action = random.choice(max_actions)
+        return best_action, max_value
+
     def choose_action(self,state,epsilon):
         '''
             This function will represent the epsilon-greedy policy, i.e. it represents the policy improvement stage of the policy iteration algorithm
@@ -18,10 +29,8 @@ class BaseAgent():
         if random.random() < epsilon:
             return random.choice(list(self.q_table[state].keys()))
         else:
-            #Note even though time complexity is O(n), it is still efficient because it only iterates through 2 actions
-            max_value = max(self.q_table[state].values())
-            max_actions = [action for (action, value) in self.q_table[state].items() if value == max_value]
-            return random.choice(max_actions)
+            get_greedy_action_and_value = self.get_greedy_action_and_value(state, self.q_table)
+            return get_greedy_action_and_value[0]
     
     def get_action(self, state, epsilon):
         '''
