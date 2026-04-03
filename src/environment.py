@@ -5,6 +5,7 @@ class Environment:
         self.deck = []
         self.player_hand = []
         self.dealer_hand = []
+        self.reward = []
         self.__initialise_game()
 
     def __initialise_game(self):
@@ -65,7 +66,8 @@ class Environment:
             print("Player cannot hit if hand value is 21 or more.")
             self.__outcome()
         if hand == self.dealer_hand and value >= 17:
-            raise Exception("Dealer must stand if hand value is 17 or more.")
+            print("Dealer cannot hit if hand value is 17 or more.")
+            return hand
         
         card = self.__draw_card()
         print("Drew card:", card)
@@ -97,16 +99,16 @@ class Environment:
         # Note: The flow of if statements is important here. We check for player bust first, then dealer bust, then compare values.
         # This ensures we correctly identify the outcome of the game based on the rules of blackjack.
         if player_value > 21:
-            return "Player loses, dealer wins.", -1
+            self.outcome = "Player loses (Exceeded 21), dealer wins.", -1
         elif dealer_value > 21:            
-            return "Dealer loses, player wins.", 1
+            self.outcome= "Dealer loses (Exceeded 21), player wins.", 1
         elif player_value > dealer_value:
-            return "Player wins.", 1
+            self.outcome = "Player wins.", 1
         elif dealer_value > player_value:
-            return "Dealer wins.", -1
+            self.outcome = "Dealer wins.", -1
         elif player_value == dealer_value:
-            return "Draw.", 0
-        
+            self.outcome = "Draw.", 0
+
     def get_state(self): # Returns the RL state
         player_value, usable_ace = self.__hand_value(self.player_hand)
         dealer_card = self.dealer_hand[0] # Dealers visible card
