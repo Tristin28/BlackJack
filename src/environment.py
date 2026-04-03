@@ -5,7 +5,7 @@ class Environment:
         self.deck = []
         self.player_hand = []
         self.dealer_hand = []
-        self.reward = []
+        self.reward = [] #I dont think it should be a list since it has to be returned after every action
         self.__initialise_game()
 
     def __initialise_game(self):

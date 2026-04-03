@@ -7,7 +7,8 @@ class BaseAgent():
 
     def increment_count(self,state,action):
         #Since both tables are initialised with zeros as it is needed for TD methods, and doesnt effect MC, then i dont need any if conditions to check
-        self.count_table[state][action] += 1
+        if state is not None and action is not None:
+            self.count_table[state][action] += 1
         
     def choose_action(self,state,epsilon):
         '''
