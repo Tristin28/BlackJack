@@ -21,6 +21,18 @@ class BaseAgent():
             max_value = max(self.q_table[state].values())
             max_actions = [action for (action, value) in self.q_table[state].items() if value == max_value]
             return random.choice(max_actions)
+    
+    def get_action(self, state, epsilon):
+        '''
+            This function is only created to seperate the logic from the hard coded rules from the epsilon-greedy policy.
+        '''
+        player_sum, _, _ = state
+        if player_sum < 12:
+            return 'hit'
+        elif player_sum == 21:
+            return 'stick'
+        else:
+            return self.choose_action(state, epsilon)
    
     def get_alpha(self, state, action):
         #Since each TD method has to use that we can also use it for MC(which would be the every visit approach) so that we have the same learning rate for all methods.

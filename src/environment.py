@@ -1,5 +1,5 @@
 import random
-
+#Should we use same object but have a method which will reset it to keep same object instead of having to create a new one for each episode?
 class Environment:
     def __init__(self):
         self.deck = []

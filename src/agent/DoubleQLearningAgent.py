@@ -1,4 +1,4 @@
-import BaseAgent
+from BaseAgent import BaseAgent #importing the class only not the entire file
 class DoubleQLearningAgent(BaseAgent):
     def __init__(self,q_table,count_table,q_table_B):
         super().__init__(q_table, count_table)
