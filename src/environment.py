@@ -120,6 +120,12 @@ class Environment:
             dealer_card = 11
         return player_value, dealer_card, usable_ace
     
+if __name__ == "__main__":
+    env = Environment()
+    player_value, dealer_card, usable_ace = env.get_state()
+    print("Initial player hand:", env.player_hand)
+    print("Initial dealer hand:", env.dealer_hand)
+    print("Initial state (player value, dealer card, usable ace):", env.get_state())
 
 
 '''
