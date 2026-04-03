@@ -5,9 +5,9 @@ class Environment:
         self.deck = []
         self.player_hand = []
         self.dealer_hand = []
-        self.initialise_game()
+        self.__initialise_game()
 
-    def initialise_game(self):
+    def __initialise_game(self):
         # A full 52 card deck, with 4 suits and 13 ranks (A, 2-10, J, Q, K); suit is not relevant for blackjack
         self.deck = ["A", "A", "A", "A", 
                      2, 2, 2, 2, 
@@ -23,15 +23,15 @@ class Environment:
                      "Q", "Q", "Q", "Q",
                      "K", "K", "K", "K"]
         random.shuffle(self.deck)
-        self.player_hand = [self.draw_card(), self.draw_card()]
-        self.dealer_hand = [self.draw_card()]
+        self.player_hand = [self.__draw_card(), self.__draw_card()]
+        self.dealer_hand = [self.__draw_card()]
 
-    def draw_card(self):
+    def __draw_card(self):
         if len(self.deck) == 0:
             raise Exception("No more cards in the deck.")
         return self.deck.pop()
     
-    def hand_value(self, hand):
+    def __hand_value(self, hand):
         value = 0
         aces = 0
         usable_ace = False 
@@ -59,34 +59,40 @@ class Environment:
     # If the value is less than 12, the player must HIT; if it is 21, the player must STAND.
     # The exceptions are raised to enforce these rules and prevent invalid actions when training the RL agent.
     def hit(self, hand):
-        value, _ = self.hand_value(hand)
+        value, _ = self.__hand_value(hand)
 
         if hand == self.player_hand and value >= 21:
             raise Exception("Player cannot hit if hand value is 21 or more.")
         if hand == self.dealer_hand and value >= 17:
             raise Exception("Dealer must stand if hand value is 17 or more.")
         
-        card = self.draw_card()
+        card = self.__draw_card()
+        print("Drew card:", card)
         hand.append(card)
         return hand
     
-    def player_stand_and_dealer_plays(self):
-        value, _ = self.hand_value(self.player_hand)
+    def stand(self):
+        value, _ = self.__hand_value(self.player_hand)
 
         if value < 12:
             raise Exception("Player must hit if hand value is less than 12.")
         
-        self.dealer_play() # After the player stands, the dealer will play
-        
-    def dealer_play(self):
-        while self.hand_value(self.dealer_hand)[0] < 17: 
-            self.hit(self.dealer_hand)
+        self.__dealer_play() # After the player stands, the dealer will play
 
-        self.outcome() # After the dealer finishes playing, we determine the outcome of the game
-    
-    def outcome(self):
-        player_value = self.hand_value(self.player_hand)[0]
-        dealer_value = self.hand_value(self.dealer_hand)[0]
+    # Set to private as it should only be called internally after the player stands, and should not be accessible from outside the Environment class.  
+    def __dealer_play(self):
+        print("Dealer plays...")
+        while self.__hand_value(self.dealer_hand)[0] < 17: 
+            self.hit(self.dealer_hand)
+            
+        print("Dealer's hand:", self.dealer_hand)
+
+        self.__outcome() # After the dealer finishes playing, we determine the outcome of the game
+
+    # Set to private as it should only be called internally after the player stands, and should not be accessible from outside the Environment class.    
+    def __outcome(self):
+        player_value = self.__hand_value(self.player_hand)[0]
+        dealer_value = self.__hand_value(self.dealer_hand)[0]
 
         # Note: The flow of if statements is important here. We check for player bust first, then dealer bust, then compare values.
         # This ensures we correctly identify the outcome of the game based on the rules of blackjack.
@@ -102,9 +108,9 @@ class Environment:
             return "Draw.", 0
         
     def get_state(self): # Returns the RL state
-        player_value, usable_ace = self.hand_value(self.player_hand)
-        dealer_card = self.dealer_hand[0] # The dealer's visible card
-        
+        player_value, usable_ace = self.__hand_value(self.player_hand)
+        dealer_card = self.dealer_hand[0] # Dealers visible card
+
         if dealer_card in ["J", "Q", "K"]:
             dealer_card = 10
         elif dealer_card == "A":
