@@ -79,7 +79,6 @@ class Environment:
         
         self.__dealer_play() # After the player stands, the dealer will play
 
-    # Set to private as it should only be called internally after the player stands, and should not be accessible from outside the Environment class.  
     def __dealer_play(self):
         print("Dealer plays...")
         while self.__hand_value(self.dealer_hand)[0] < 17: 
@@ -89,7 +88,6 @@ class Environment:
 
         self.__outcome() # After the dealer finishes playing, we determine the outcome of the game
 
-    # Set to private as it should only be called internally after the player stands, and should not be accessible from outside the Environment class.    
     def __outcome(self):
         player_value = self.__hand_value(self.player_hand)[0]
         dealer_value = self.__hand_value(self.dealer_hand)[0]
