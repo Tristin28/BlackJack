@@ -60,7 +60,7 @@ class Environment:
     # If the value is less than 12, the player must HIT; if it is 21, the player must STAND.
     # The exceptions are raised to enforce these rules and prevent invalid actions when training the RL agent.
     def hit(self, hand):
-        #Should this send an immediate reward of 0 and then when agent decides to stand it waits until outcome is sent?!
+        #Should this send an immediate reward of 0 and then when agent decides to stand it waits until outcome is sent?
         value, _ = self.__hand_value(hand)
 
         if hand == self.player_hand and value >= 21:
