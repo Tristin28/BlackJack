@@ -11,7 +11,6 @@ class BaseAgent():
         
     def choose_action(self,state,epsilon):
         '''
-            
             This function will represent the epsilon-greedy policy, i.e. it represents the policy improvement stage of the policy iteration algorithm
             it is shared among all other agents, because the same policy is required for all methods
         '''
