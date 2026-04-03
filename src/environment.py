@@ -62,7 +62,8 @@ class Environment:
         value, _ = self.__hand_value(hand)
 
         if hand == self.player_hand and value >= 21:
-            raise Exception("Player cannot hit if hand value is 21 or more.")
+            print("Player cannot hit if hand value is 21 or more.")
+            self.__outcome()
         if hand == self.dealer_hand and value >= 17:
             raise Exception("Dealer must stand if hand value is 17 or more.")
         
@@ -75,7 +76,8 @@ class Environment:
         value, _ = self.__hand_value(self.player_hand)
 
         if value < 12:
-            raise Exception("Player must hit if hand value is less than 12.")
+            print("Player must hit if hand value is less than 12.")
+            return self.player_hand
         
         self.__dealer_play() # After the player stands, the dealer will play
 
