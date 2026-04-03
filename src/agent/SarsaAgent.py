@@ -1,4 +1,4 @@
-from BaseAgent import BaseAgent #importing the class only not the entire file
+import BaseAgent
 class SarsaAgent(BaseAgent):
     def __init__(self,q_table,count_table):
         super().__init__(q_table, count_table)

@@ -1,5 +1,5 @@
 from typing import override
-from BaseAgent import BaseAgent #importing the class only not the entire file
+import BaseAgent 
 import random
 
 class DoubleQLearningAgent(BaseAgent):
