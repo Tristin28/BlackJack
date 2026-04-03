@@ -119,3 +119,37 @@ class Environment:
         elif dealer_card == "A":
             dealer_card = 11
         return player_value, dealer_card, usable_ace
+    
+
+
+'''
+Reward structure clarification for Blackjack RL environment
+
+Suggestion: The environment should return reward = 0 after every HIT action,
+and only return a non-zero reward when the player chooses STAND (i.e. at the
+terminal transition after the dealer finishes playing).
+
+Expected behaviour:
+
+1) After HIT:
+    - Environment draws a card for the player
+    - Returns next player state
+    - reward = 0
+    - done = False (unless player busts → then reward = -1, done = True)
+
+2) After STAND:
+    - Environment runs dealer policy internally until dealer stops
+    - Compare dealer vs player totals
+    - reward = +1 (win), 0 (draw), or -1 (loss)
+    - done = True
+
+Important reasoning:
+The dealer's actions are environment dynamics, not agent decisions, so they
+should NOT appear as intermediate states in the agent’s trajectory. From the
+agent’s perspective:
+    (state, STAND) → terminal reward
+
+This structure is required so Monte-Carlo, SARSA, and Q-learning update rules
+work correctly, since Blackjack is a terminal-reward episodic environment where
+intermediate rewards are zero until the outcome is determined.
+'''
