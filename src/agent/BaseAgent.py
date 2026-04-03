@@ -38,3 +38,17 @@ class BaseAgent():
     def get_alpha(self, state, action):
         #Since each TD method has to use that we can also use it for MC(which would be the every visit approach) so that we have the same learning rate for all methods.
         return 1/(1+self.count_table[state][action])
+    
+    def initialise_q_table(self, state):
+        '''
+        Since there are only 200 states and 2 actions it is more efficient to initialise the Q-table with all states and actions at the start of the program, 
+        Rather than checking if a state-action pair is in the Q-table every time we want to update a Q-value or select an action.
+        '''
+        for player_sum in range(12, 21):
+            for dealer_card in range(2, 12):
+                for usable_ace in [True, False]:
+
+                    state = (player_sum, dealer_card, usable_ace)
+
+                    self.q_table[state] = {"HIT": 0.0, "STAND": 0.0}
+                    self.count_table[state] = {"HIT": 0, "STAND": 0}

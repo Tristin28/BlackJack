@@ -5,7 +5,7 @@ class Environment:
         self.deck = []
         self.player_hand = []
         self.dealer_hand = []
-        self.reward = [] #I dont think it should be a list since it has to be returned after every action
+        #self.reward = [] #I dont think it should be a list since it has to be returned after every action
         self.__initialise_game()
 
     def __initialise_game(self):
@@ -100,15 +100,15 @@ class Environment:
         # Note: The flow of if statements is important here. We check for player bust first, then dealer bust, then compare values.
         # This ensures we correctly identify the outcome of the game based on the rules of blackjack.
         if player_value > 21:
-            self.outcome = "Player loses (Exceeded 21), dealer wins.", -1
+            self.reward = "Player loses (Exceeded 21), dealer wins.", -1
         elif dealer_value > 21:            
-            self.outcome= "Dealer loses (Exceeded 21), player wins.", 1
+            self.reward= "Dealer loses (Exceeded 21), player wins.", 1
         elif player_value > dealer_value:
-            self.outcome = "Player wins.", 1
+            self.reward = "Player wins.", 1
         elif dealer_value > player_value:
-            self.outcome = "Dealer wins.", -1
+            self.reward = "Dealer wins.", -1
         elif player_value == dealer_value:
-            self.outcome = "Draw.", 0
+            self.reward = "Draw.", 0
 
     def get_state(self): # Returns the RL state
         player_value, usable_ace = self.__hand_value(self.player_hand)
@@ -158,4 +158,26 @@ agent’s perspective:
 This structure is required so Monte-Carlo, SARSA, and Q-learning update rules
 work correctly, since Blackjack is a terminal-reward episodic environment where
 intermediate rewards are zero until the outcome is determined.
+'''
+
+
+'''
+def step(self, action):
+        if action not in ["hit", "stick"]:
+            raise ValueError("Action must be 'hit' or 'stick'.")
+
+        if action == "hit":
+            self.hit(self.player_hand)
+            player_value, _ = self.__hand_value(self.player_hand)
+
+            if player_value > 21:
+                self.__outcome()
+                return None, -1, True
+
+            return self.get_state(), 0, False
+
+        if action == "stick":
+            self.stand()
+            reward = self.reward[1]
+            return None, reward, True
 '''
