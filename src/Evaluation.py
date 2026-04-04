@@ -44,9 +44,7 @@ def run_episodes(agent, num_episodes, exploring_starts=False):
 
     for episode in range(1,num_episodes+1):
         env = Environment() 
-        epsilon_schedule = [0.1, 1/episode, math.exp(-episode/1000), math.exp(-episode/10000)]
-        for eps in epsilon_schedule:
-            pass
+        
 
 if __name__ == "__main__":
     num_episodes = 100000
