@@ -37,9 +37,9 @@ class BaseAgent():
         '''
         player_sum, _, _ = state
         if player_sum < 12:
-            return 'hit'
+            return 'HIT'
         elif player_sum == 21:
-            return 'stand'
+            return 'STAND'
         else:
             return self.choose_action(state, epsilon)
    
@@ -60,3 +60,4 @@ class BaseAgent():
 
                     self.q_table[state] = {"HIT": 0.0, "STAND": 0.0}
                     self.count_table[state] = {"HIT": 0, "STAND": 0}
+    

@@ -10,7 +10,7 @@ class SarsaAgent(BaseAgent):
         else:
             self.q_table[state][action] += alpha * (reward + self.q_table[next_state][next_action] - self.q_table[state][action])
 
-    def training_loop(self, environment_instance, epsilon):
+    def run_episode(self, environment_instance, epsilon):
         #done has to be passed from env so it indicated when episode is over
         state = environment_instance.get_state()
         action = self.get_action(state, epsilon)

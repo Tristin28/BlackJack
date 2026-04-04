@@ -34,10 +34,15 @@ class DoubleQLearningAgent(BaseAgent):
             return random.choice(max_actions)
         
     def average_q_value(self, state):
-        return {"hit": (self.q_table[state]["hit"] + self.q_table_B[state]["hit"]) / 2, 
-                "stick": (self.q_table[state]["stick"] + self.q_table_B[state]["stick"]) / 2}
+        return {"HIT": (self.q_table[state]["HIT"] + self.q_table_B[state]["HIT"]) / 2, 
+                "STAND": (self.q_table[state]["STAND"] + self.q_table_B[state]["STAND"]) / 2}
     
+<<<<<<< HEAD
     def training_loop(self, environment_instance, epsilon):
+=======
+
+    def run_episode(self, environment_instance, epsilon):
+>>>>>>> 7be3ca6 (changes)
         state = environment_instance.get_state()
         done = False
         while not done:
