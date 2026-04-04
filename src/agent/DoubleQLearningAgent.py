@@ -47,6 +47,7 @@ class DoubleQLearningAgent(BaseAgent):
         done = False
         while not done:
             action = self.get_action(state, epsilon)
+            self.increment_count(state, action)
             next_state, reward, done = environment_instance.step(action)
             self.update_q_value(state, action, reward, next_state)
             state = next_state

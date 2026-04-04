@@ -45,4 +45,4 @@ class BaseAgent():
    
     def get_alpha(self, state, action):
         #Since each TD method has to use that we can also use it for MC(which would be the every visit approach) so that we have the same learning rate for all methods.
-        return 1/(1+self.count_table[state][action])
+        return 1/(self.count_table[state][action])
