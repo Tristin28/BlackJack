@@ -7,7 +7,7 @@ class MonteCarloAgent(BaseAgent):
         
     def update_q_value(self, state, action, reward):
         alpha = self.get_alpha(state, action)
-        self.q_table[state][action] += alpha * (reward - self.q_table[state][action])
+        self.q_table[state][action] += alpha * (reward - self.q_table[state][action]) # Gamma ommited as it is 1 in this case
 
     def get_action(self, state, epsilon, exploring_starts, first_decision):
         player_sum, _, _ = state
