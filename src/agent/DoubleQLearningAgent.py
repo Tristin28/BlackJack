@@ -1,5 +1,5 @@
 from typing import override
-import BaseAgent 
+from BaseAgent import BaseAgent #importing class because if not like this then the module will be passed inside the current agent class
 import random
 
 class DoubleQLearningAgent(BaseAgent):
