@@ -5,10 +5,13 @@ class Environment:
         self.deck = []
         self.player_hand = []
         self.dealer_hand = []
-        self.reward = None
+        self.reward = 0
+        self.done = False
         self.__initialise_game()
 
     def __initialise_game(self):
+        self.reward = 0
+        self.done = False
         # A full 52 card deck, with 4 suits and 13 ranks (A, 2-10, J, Q, K); suit is not relevant for blackjack
         self.deck = ["A", "A", "A", "A", 
                      2, 2, 2, 2, 
@@ -26,6 +29,25 @@ class Environment:
         random.shuffle(self.deck)
         self.player_hand = [self.__draw_card(), self.__draw_card()]
         self.dealer_hand = [self.__draw_card()]
+        self.advance_to_learning_state()
+
+    def advance_to_learning_state(self):
+            while True:
+                player_value, _ = self.__hand_value(self.player_hand)
+
+                if player_value > 21:
+                    self.__outcome()
+                    return None
+
+                if player_value == 21:
+                    self.__dealer_play()
+                    return None
+
+                if player_value < 12:
+                    self.__hit(self.player_hand)
+                    continue
+
+                return self.get_state()
 
     def __draw_card(self):
         if len(self.deck) == 0:
@@ -60,115 +82,73 @@ class Environment:
     # If the value is less than 12, the player must HIT; if it is 21, the player must STAND.
     # The exceptions are raised to enforce these rules and prevent invalid actions when training the RL agent.
     def __hit(self, hand):
-        #Should this send an immediate reward of 0 and then when agent decides to stand it waits until outcome is sent?
-        value, _ = self.__hand_value(hand)
-
-        if hand == self.player_hand and value >= 21:
-            print("Player cannot hit if hand value is 21 or more.")
-            self.__outcome()
-        if hand == self.dealer_hand and value >= 17:
-            print("Dealer cannot hit if hand value is 17 or more.")
-            return hand
-        
         card = self.__draw_card()
-        print("Drew card:", card)
         hand.append(card)
-        return hand
     
     def __stand(self):
         value, _ = self.__hand_value(self.player_hand)
 
         if value < 12:
-            print("Player must hit if hand value is less than 12.")
-            return self.player_hand
+            raise Exception("Player shouldn't be able to stand with hand value less than 12.")
         
         self.__dealer_play() # After the player stands, the dealer will play
 
     def step(self, action):
+        value, _ = self.__hand_value(self.player_hand)
+
+        if self.done:
+            raise Exception("Episode has ended. Step shouldn't have been called.")
+        
         if action == 'HIT':
+            if value >= 21:
+                raise Exception("Player shouldn't be able to hit with hand value of 21 or more.")
+            
             self.__hit(self.player_hand)
-            reward = 0
-            done = False
-            # Check if player exceeds 21 after hitting
-            player_value, _ = self.__hand_value(self.player_hand)
-            if player_value > 21:
-                reward = -1
-                done = True
-                self.__outcome() # Determine outcome immediately if player exceeds 21
-                return None, self.outcome, done
+
+            next_state = self.advance_to_learning_state()
+                
+            return next_state, self.reward, self.done
+        
         elif action == 'STAND':
             self.__stand()
-            reward = self.outcome # Outcome is determined after dealer plays
-            done = True #Had to fix this
+            return None, self.reward, self.done
         else:
             raise ValueError("Invalid action. Action must be 'HIT' or 'STAND'.")
     
-        return self.get_state(), reward, done
-
     def __dealer_play(self):
-        print("Dealer plays...")
         while self.__hand_value(self.dealer_hand)[0] < 17: 
             self.__hit(self.dealer_hand)
             
-        print("Dealer's hand:", self.dealer_hand)
-
         self.__outcome() # After the dealer finishes playing, we determine the outcome of the game
 
     def __outcome(self):
-        player_value = self.__hand_value(self.player_hand)[0]
-        dealer_value = self.__hand_value(self.dealer_hand)[0]
+        self.done = True
+        player_value, _ = self.__hand_value(self.player_hand)
+        dealer_value, _ = self.__hand_value(self.dealer_hand)
 
         # Note: The flow of if statements is important here. We check for player bust first, then dealer bust, then compare values.
         # This ensures we correctly identify the outcome of the game based on the rules of blackjack.
-        if player_value > 21:
-            print("Player loses (Exceeded 21), dealer wins.")
-            self.outcome = -1
-        elif dealer_value > 21:
-            print("Dealer loses (Exceeded 21), player wins.")
-            self.outcome = 1
-        elif player_value > dealer_value:
-            print("Player wins.")
-            self.outcome = 1
-        elif dealer_value > player_value:
-            print("Dealer wins.")
-            self.outcome = -1
-        elif player_value == dealer_value:
-            print("Draw.")
-            self.outcome = 0
+        if player_value > 21: # Player loses (Exceeded 21), dealer wins.
+            self.reward = -1
+        elif dealer_value > 21: # Dealer loses (Exceeded 21), player wins.
+            self.reward = 1
+        elif player_value > dealer_value: # Player wins.
+            self.reward = 1
+        elif dealer_value > player_value: # Dealer wins.
+            self.reward = -1
+        elif player_value == dealer_value: # Draw.
+            self.reward = 0
+    
+    def __dealer_visible_card_value(self):
+        dealer_card = self.dealer_hand[0]
+        if dealer_card in ["J", "Q", "K"]:
+            return 10
+        if dealer_card == "A":
+            return 11
+        return dealer_card
 
     def get_state(self):
-            player_value, usable_ace = self.__hand_value(self.player_hand)
-
-            # Auto-hit until the player reaches a valid learning state
-            while player_value < 12:
-                self.__hit(self.player_hand)
-                player_value, usable_ace = self.__hand_value(self.player_hand)
-
-            if player_value == 21:
-            # treat as forced STAND situation
-                self.__dealer_play() # Dealer plays out their hand immediately since player has 21
-                return None
-            
-            dealer_card = self.dealer_hand[0]
-
-            if dealer_card in ["J", "Q", "K"]:
-                dealer_card = 10
-            elif dealer_card == "A":
-                dealer_card = 11
-
-            return player_value, dealer_card, usable_ace
-    
-'''
-
-def get_state(self): # Returns the RL state
-        #Modify this so when the player hand is <=12 dont return state.
         player_value, usable_ace = self.__hand_value(self.player_hand)
-        dealer_card = self.dealer_hand[0] # Dealers visible card
+        dealer_card = self.__dealer_visible_card_value()
 
-        if dealer_card in ["J", "Q", "K"]:
-            dealer_card = 10
-        elif dealer_card == "A":
-            dealer_card = 11
         return player_value, dealer_card, usable_ace
-
-'''
