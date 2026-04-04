@@ -30,7 +30,7 @@ def inisitalise_count_table(self):
         return count_table
 
 
-def run_episodes(env,agent, num_episodes, exploring_starts=False):
+def run_episodes(agent, num_episodes, exploring_starts=False):
     rewards = []
 
     if isinstance(agent, DoubleQLearningAgent):
@@ -42,8 +42,20 @@ def run_episodes(env,agent, num_episodes, exploring_starts=False):
         agent.q_table = initialise_q_table()
         agent.count_table = inisitalise_count_table()
 
-    agent.initialize_q_table()
     for episode in range(1,num_episodes+1):
+        env = Environment() 
         epsilon_schedule = [0.1, 1/episode, math.exp(-episode/1000), math.exp(-episode/10000)]
         for eps in epsilon_schedule:
             pass
+
+if __name__ == "__main__":
+    num_episodes = 100000
+    q_learning_agent = QLearningAgent({}, {})
+    double_q_learning_agent = DoubleQLearningAgent({}, {}, {})
+    monte_carlo_agent = MonteCarloAgent({}, {})
+    sarsa_agent = SarsaAgent({}, {})
+    
+    run_episodes(q_learning_agent, num_episodes)
+    run_episodes(double_q_learning_agent, num_episodes)
+    run_episodes(monte_carlo_agent, num_episodes)
+    run_episodes(sarsa_agent, num_episodes)
