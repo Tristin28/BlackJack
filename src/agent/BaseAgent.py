@@ -34,14 +34,16 @@ class BaseAgent():
     def get_action(self, state, epsilon):
         '''
             This function is only created to seperate the logic from the hard coded rules from the epsilon-greedy policy.
-        '''
-        player_sum, _, _ = state
+            player_sum, _, _ = state
         if player_sum < 12:
             return 'HIT'
         elif player_sum == 21:
             return 'STAND'
         else:
             return self.choose_action(state, epsilon)
+        '''
+        return self.choose_action(state, epsilon)
+        
    
     def get_alpha(self, state, action):
         #Since each TD method has to use that we can also use it for MC(which would be the every visit approach) so that we have the same learning rate for all methods.
