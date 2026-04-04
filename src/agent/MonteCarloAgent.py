@@ -1,5 +1,5 @@
 import random
-from BaseAgent import BaseAgent 
+from agent.BaseAgent import BaseAgent 
 
 class MonteCarloAgent(BaseAgent):
     def __init__(self, q_table, count_table):

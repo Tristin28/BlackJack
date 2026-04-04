@@ -1,4 +1,5 @@
-from BaseAgent import BaseAgent
+from agent.BaseAgent import BaseAgent 
+
 class SarsaAgent(BaseAgent):
     def __init__(self,q_table,count_table):
         super().__init__(q_table, count_table)
@@ -14,6 +15,7 @@ class SarsaAgent(BaseAgent):
         #done has to be passed from env so it indicated when episode is over
         state = environment_instance.get_state()
         action = self.get_action(state, epsilon)
+
         done = False
         while not done:
             #step is there to take the action and return the reward and whether the episode is done
@@ -29,3 +31,5 @@ class SarsaAgent(BaseAgent):
 
             state = next_state
             action = next_action
+
+        return reward #Final outcome of the episode.

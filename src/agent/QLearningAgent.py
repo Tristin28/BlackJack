@@ -1,4 +1,4 @@
-import BaseAgent
+from agent.BaseAgent import BaseAgent 
 class QLearningAgent(BaseAgent):
     def __init__(self,q_table,count_table):
         super().__init__(q_table, count_table)

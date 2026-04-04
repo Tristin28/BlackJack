@@ -2,14 +2,15 @@ from agent.BaseAgent import BaseAgent
 from agent.MonteCarloAgent import MonteCarloAgent
 from agent.SarsaAgent import SarsaAgent
 from agent.QLearningAgent import QLearningAgent
-from agent.DoubleQLearningAgent import DoubleQLearningAgent
+from agent.DoubleQLearningAgent import DoubleQLearningAgent, get_average_q_table
 from environment import Environment
 import math 
+
 
 #Helper function to initialise Q-table
 def initialise_q_table():
         '''
-        Since there are only 200 states and 2 actions it is more efficient to initialise the Q-table with all states and actions at the start of the program, 
+        Since there are only 180 states and 2 actions it is more efficient to initialise the Q-table with all states and actions at the start of the program, 
         Rather than checking if a state-action pair is in the Q-table every time we want to update a Q-value or select an action.
         '''
         q_table = {}
@@ -20,7 +21,7 @@ def initialise_q_table():
                     q_table[state] = {"HIT": 0.0, "STAND": 0.0}
         return q_table
 
-def inisitalise_count_table(self):
+def inisitalise_count_table():
         count_table = {}
         for player_sum in range(12, 21):
             for dealer_card in range(2, 12):
@@ -29,9 +30,19 @@ def inisitalise_count_table(self):
                     count_table[state] = {"HIT": 0, "STAND": 0}
         return count_table
 
+def get_epsilon(config, episode):
+    if config == "fixed_0.1":
+        return 0.1
+    elif config == "1_over_k":
+        return 1 / episode
+    elif config == "exp_1000":
+        return math.exp(-episode / 1000)
+    elif config == "exp_10000":
+        return math.exp(-episode / 10000)
 
-def run_episodes(agent, num_episodes, exploring_starts=False):
-    rewards = []
+def run_episodes(agent, config, num_episodes=100000):
+    history = []
+    wins, losses, draws = 0, 0, 0
 
     if isinstance(agent, DoubleQLearningAgent):
         agent.q_table = initialise_q_table()
@@ -43,17 +54,53 @@ def run_episodes(agent, num_episodes, exploring_starts=False):
         agent.count_table = inisitalise_count_table()
 
     for episode in range(1,num_episodes+1):
-        env = Environment() 
+        env = Environment() #Creating a new instance because the instiate game (resetting the game) is inside the constructor 
+        epsilon = get_epsilon(config, episode)
+
+        if not isinstance(agent, MonteCarloAgent):
+            reward = agent.run_episode(env, epsilon)
+        else:
+            episode_trace, reward = agent.run_episode(env, epsilon)
+            for state, action in episode_trace:
+                agent.increment_count(state, action)
+                agent.update_q_value(state, action, reward)
+            
+        if reward == 1:
+            wins += 1
+        elif reward == -1:
+            losses += 1
+        else:
+            draws += 1
         
+        if episode % 1000 == 0:
+            history.append((episode, wins, losses, draws))
+            #print(f"Episode: {episode}, Wins: {wins}, Losses: {losses}, Draws: {draws}")
+            wins, losses, draws = 0, 0, 0 #Resetting the counts 
+        
+    if isinstance(agent, DoubleQLearningAgent):
+        avg_q_table = get_average_q_table(agent.q_table, agent.q_table_B)
+        visited_pairs, num_visited_pairs = get_visited_pairs_and_count(agent.count_table)
+        return history, avg_q_table, num_visited_pairs, visited_pairs
+    else:
+        visited_pairs, num_visited_pairs = get_visited_pairs_and_count(agent.count_table)
+        return history, agent.q_table, num_visited_pairs, visited_pairs
+
+def get_visited_pairs_and_count(count_table):
+    '''
+        Helper function which returns how many different state-action pairs were explored at least once and the state-action pairs themselves
+    '''
+    visited_pairs = []
+
+    for state in count_table:
+        for action in count_table[state]:
+            if count_table[state][action] >= 1:
+                visited_pairs.append((state, action))
+
+    return visited_pairs, len(visited_pairs)
 
 if __name__ == "__main__":
-    num_episodes = 100000
-    q_learning_agent = QLearningAgent({}, {})
-    double_q_learning_agent = DoubleQLearningAgent({}, {}, {})
-    monte_carlo_agent = MonteCarloAgent({}, {})
-    sarsa_agent = SarsaAgent({}, {})
-    
-    run_episodes(q_learning_agent, num_episodes)
-    run_episodes(double_q_learning_agent, num_episodes)
-    run_episodes(monte_carlo_agent, num_episodes)
-    run_episodes(sarsa_agent, num_episodes)
+    agent = DoubleQLearningAgent({}, {}, {})
+    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "fixed_0.1", num_episodes=100000)
+    print(f"Number of visited state-action pairs: {num_visited_pairs}") 
+    print(f"Visited state-action pairs: {visited_pairs}")
+    print(f"History: {history}")

@@ -85,7 +85,7 @@ class Environment:
         self.__dealer_play() # After the player stands, the dealer will play
 
     def step(self, action):
-        if action == 'hit':
+        if action == 'HIT':
             self.__hit(self.player_hand)
             reward = 0
             done = False
@@ -94,13 +94,15 @@ class Environment:
             if player_value > 21:
                 reward = -1
                 done = True
-                self.__outcome() # Determine outcome immediately if player exceeds 21
-        elif action == 'stand':
+                self.outcome() # Determine outcome immediately if player exceeds 21
+                return None, self.outcome, done
+        elif action == 'STAND':
             self.__stand()
-            reward, done = self.outcome # Outcome is determined after dealer plays
+            reward = self.outcome # Outcome is determined after dealer plays
+            done = True #Had to fix this
         else:
-            raise ValueError("Invalid action. Action must be 'hit' or 'stand'.")
-        
+            raise ValueError("Invalid action. Action must be 'HIT' or 'STAND'.")
+    
         return self.get_state(), reward, done
 
     def __dealer_play(self):
@@ -135,6 +137,7 @@ class Environment:
             self.outcome = 0
 
     def get_state(self): # Returns the RL state
+        #Modify this so when the player hand is <=12 dont return state.
         player_value, usable_ace = self.__hand_value(self.player_hand)
         dealer_card = self.dealer_hand[0] # Dealers visible card
 

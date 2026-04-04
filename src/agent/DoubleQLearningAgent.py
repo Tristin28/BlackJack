@@ -1,5 +1,5 @@
 from typing import override
-from BaseAgent import BaseAgent #importing class because if not like this then the module will be passed inside the current agent class
+from agent.BaseAgent import BaseAgent #importing class because if not like this then the module will be passed inside the current agent class
 import random
 
 class DoubleQLearningAgent(BaseAgent):
@@ -43,11 +43,23 @@ class DoubleQLearningAgent(BaseAgent):
     
 
     def run_episode(self, environment_instance, epsilon):
-        state = environment_instance.get_state()
         done = False
+
+        state = environment_instance.get_state()
         while not done:
             action = self.get_action(state, epsilon)
             self.increment_count(state, action)
             next_state, reward, done = environment_instance.step(action)
             self.update_q_value(state, action, reward, next_state)
             state = next_state
+            
+        return reward #Final outcome of the episode.
+    
+
+def get_average_q_table(q1, q2):
+    avg_table = {}
+
+    for state in q1: 
+        avg_table[state] = {action: (q1[state][action] + q2[state][action]) / 2  for action in q1[state]}
+
+    return avg_table
