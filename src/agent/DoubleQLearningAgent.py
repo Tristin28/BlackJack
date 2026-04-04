@@ -40,7 +40,9 @@ class DoubleQLearningAgent(BaseAgent):
 
     def training_loop(self, environment_instance, epsilon):
         state = environment_instance.get_state()
-        action = self.get_action(state, epsilon)
         done = False
         while not done:
-            pass
+            action = self.get_action(state, epsilon)
+            next_state, reward, done = environment_instance.step(action)
+            self.update_q_value(state, action, reward, next_state)
+            state = next_state
