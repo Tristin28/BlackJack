@@ -11,12 +11,16 @@ class DoubleQLearningAgent(BaseAgent):
         best_action = None
         alpha = self.get_alpha(state, action)
         if random.random() < 0.5:
-            best_action, _ = self.get_greedy_action_and_value(next_state, self.q_table_B)
-            if best_action is not None:
+            if next_state is None:
+                self.q_table[state][action] += alpha * (reward - self.q_table[state][action])
+            else:
+                best_action, _ = self.get_greedy_action_and_value(next_state, self.q_table_B)
                 self.q_table[state][action] += alpha * (reward + self.q_table[next_state][best_action] - self.q_table[state][action])
         else:
-            best_action, _ = self.get_greedy_action_and_value(next_state, self.q_table)
-            if best_action is not None:
+            if next_state is None:
+                self.q_table[state][action] += alpha * (reward - self.q_table[state][action])
+            else:
+                best_action, _ = self.get_greedy_action_and_value(next_state, self.q_table)
                 self.q_table_B[state][action] += alpha * (reward + self.q_table_B[next_state][best_action] - self.q_table_B[state][action])
         
     @override
