@@ -37,7 +37,6 @@ class DoubleQLearningAgent(BaseAgent):
         return {"hit": (self.q_table[state]["hit"] + self.q_table_B[state]["hit"]) / 2, 
                 "stick": (self.q_table[state]["stick"] + self.q_table_B[state]["stick"]) / 2}
     
-
     def training_loop(self, environment_instance, epsilon):
         state = environment_instance.get_state()
         done = False

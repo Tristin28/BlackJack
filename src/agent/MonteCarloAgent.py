@@ -11,7 +11,7 @@ class MonteCarloAgent(BaseAgent):
         self.q_table[state][action] += alpha * (reward - self.q_table[state][action])
 
     @override
-    def get_action(self, state, epsilon, exploring_starts, first_decision):
+    def __get_action(self, state, epsilon, exploring_starts, first_decision):
         player_sum, _, _ = state
         if player_sum < 12:
             return 'HIT', first_decision
@@ -30,7 +30,7 @@ class MonteCarloAgent(BaseAgent):
         episode_trace = [] # To store the state-action pairs for the current episode, which we will use to update the Q-values after the episode ends - this approach aligns with the Monte Carlo Method
 
         while not done:
-            action, first_decision = self.get_action(state, epsilon, exploring_starts, first_decision)
+            action, first_decision = self.__get_action(state, epsilon, exploring_starts, first_decision)
 
             if 12 <= state[0] <= 20:
                 episode_trace.append((state, action))

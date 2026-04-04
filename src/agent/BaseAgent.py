@@ -31,7 +31,6 @@ class BaseAgent():
         else:
             return self.get_greedy_action_and_value(state, self.q_table)[0]
     
-    # I added an exploring_starts argument which would help for the MonteCarlo Agent
     def get_action(self, state, epsilon):
         '''
             This function is only created to seperate the logic from the hard coded rules from the epsilon-greedy policy.
