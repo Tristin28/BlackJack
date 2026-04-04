@@ -94,7 +94,7 @@ class Environment:
             if player_value > 21:
                 reward = -1
                 done = True
-                self.outcome() # Determine outcome immediately if player exceeds 21
+                self.__outcome() # Determine outcome immediately if player exceeds 21
                 return None, self.outcome, done
         elif action == 'STAND':
             self.__stand()
@@ -136,7 +136,31 @@ class Environment:
             print("Draw.")
             self.outcome = 0
 
-    def get_state(self): # Returns the RL state
+    def get_state(self):
+            player_value, usable_ace = self.__hand_value(self.player_hand)
+
+            # Auto-hit until the player reaches a valid learning state
+            while player_value < 12:
+                self.__hit(self.player_hand)
+                player_value, usable_ace = self.__hand_value(self.player_hand)
+
+            if player_value == 21:
+            # treat as forced STAND situation
+                self.__dealer_play() # Dealer plays out their hand immediately since player has 21
+                return None
+            
+            dealer_card = self.dealer_hand[0]
+
+            if dealer_card in ["J", "Q", "K"]:
+                dealer_card = 10
+            elif dealer_card == "A":
+                dealer_card = 11
+
+            return player_value, dealer_card, usable_ace
+    
+'''
+
+def get_state(self): # Returns the RL state
         #Modify this so when the player hand is <=12 dont return state.
         player_value, usable_ace = self.__hand_value(self.player_hand)
         dealer_card = self.dealer_hand[0] # Dealers visible card
@@ -146,3 +170,5 @@ class Environment:
         elif dealer_card == "A":
             dealer_card = 11
         return player_value, dealer_card, usable_ace
+
+'''
