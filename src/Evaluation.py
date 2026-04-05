@@ -99,8 +99,43 @@ def get_visited_pairs_and_count(count_table):
     return visited_pairs, len(visited_pairs)
 
 if __name__ == "__main__":
+    
+    print("Running Double Q-Learning Agent with epsilon=0.1\n")
     agent = DoubleQLearningAgent({}, {}, {})
     history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "fixed_0.1", num_episodes=100000)
-    print(f"Number of visited state-action pairs: {num_visited_pairs}") 
+    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
     print(f"Visited state-action pairs: {visited_pairs}")
-    print(f"History: {history}")
+    print(f"\n\n\n\nHistory: {history}")
+
+
+    agent = SarsaAgent({}, {})
+    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "fixed_0.1", num_episodes=100000)
+    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
+    print(f"Visited state-action pairs: {visited_pairs}")
+    print(f"\n\n\n\nHistory: {history}")
+
+
+    print("\nRunning Double Q-Learning Agent with epsilon=1_over_k\n")
+    agent = DoubleQLearningAgent({}, {}, {})
+    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "1_over_k", num_episodes=100000)
+    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
+    print(f"Visited state-action pairs: {visited_pairs}")
+    print(f"\n\n\n\nHistory: {history}")
+    
+    
+    
+
+    print("\nRunning Q-Learning Agent with epsilon=1_over_k\n")
+    agent = QLearningAgent({}, {})
+    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "1_over_k", num_episodes=100000)
+    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
+    print(f"Visited state-action pairs: {visited_pairs}")
+    print(f"\n\n\n\nHistory: {history}")
+
+    print("\nRunning MC Agent with epsilon=1_over_k\n")
+    agent = MonteCarloAgent({}, {})
+    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "1_over_k", num_episodes=100000)
+    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
+    print(f"Visited state-action pairs: {visited_pairs}")
+    print(f"\n\n\n\nHistory: {history}")
+

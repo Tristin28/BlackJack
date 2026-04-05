@@ -12,11 +12,18 @@ class SarsaAgent(BaseAgent):
             self.q_table[state][action] += alpha * (reward + self.q_table[next_state][next_action] - self.q_table[state][action])
 
     def run_episode(self, environment_instance, epsilon):
-        #done has to be passed from env so it indicated when episode is over
-        state = environment_instance.get_state()
+        state = environment_instance.advance_to_learning_state()
+        if state is None:
+            '''
+            This has to be done because sometimes game can finish before the agent can even take an action
+            As environment returns a valid state for when player sum is only in the range of 12 to 20 
+            Hence if the automatic HIT action when player sum < 12 causes the player to bust (or reach 21) then game automatically stops without learning
+            '''
+            return environment_instance.reward #Final outcome of the episode.
+        
         action = self.get_action(state, epsilon)
 
-        done = False
+        done = environment_instance.done
         while not done:
             #step is there to take the action and return the reward and whether the episode is done
             next_state, reward, done = environment_instance.step(action) 
@@ -32,4 +39,4 @@ class SarsaAgent(BaseAgent):
             state = next_state
             action = next_action
 
-        return reward #Final outcome of the episode.
+        return environment_instance.reward #Final outcome of the episode.
