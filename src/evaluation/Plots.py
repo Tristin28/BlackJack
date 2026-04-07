@@ -1,4 +1,8 @@
 import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import matplotlib.pyplot as plt
 from agent import DoubleQLearningAgent, MonteCarloAgent, QLearningAgent, SarsaAgent
 from evaluation.Evaluation import run_episodes
@@ -105,7 +109,7 @@ def evaluate_algorithm(algorithm_name, agent_factory, configs, num_episodes=1000
 
 if __name__ == "__main__":
     NUM_EPISODES = 100000
-    OUTPUT_DIR = "plots"
+    OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "plots")
 
     mc_configs = [
         ("Exploring Starts (1/k)", "1_over_k", True),
@@ -147,7 +151,7 @@ if __name__ == "__main__":
 
     evaluate_algorithm(
         "DoubleQLearning",
-        lambda: DoubleQLearningAgent({}, {}),
+        lambda: DoubleQLearningAgent({}, {}, {}),
         td_configs,
         num_episodes=NUM_EPISODES,
         output_dir=OUTPUT_DIR
