@@ -39,7 +39,7 @@ def get_epsilon(config, episode):
     elif config == "exp_10000":
         return math.exp(-episode / 10000)
 
-def run_episodes(agent, config, num_episodes=100000):
+def run_episodes(agent, config, num_episodes=100000, exploring_starts=False):
     history = []
     wins, losses, draws = 0, 0, 0
 
@@ -56,13 +56,14 @@ def run_episodes(agent, config, num_episodes=100000):
         env = Environment() #Creating a new instance because the instiate game (resetting the game) is inside the constructor 
         epsilon = get_epsilon(config, episode)
 
-        if not isinstance(agent, MonteCarloAgent):
-            reward = agent.run_episode(env, epsilon)
-        else:
-            episode_trace, reward = agent.run_episode(env, epsilon)
+        if isinstance(agent, MonteCarloAgent):
+            episode_trace, reward = agent.run_episode(env, epsilon, exploring_starts)
+            
             for state, action in episode_trace:
                 agent.increment_count(state, action)
                 agent.update_q_value(state, action, reward)
+        else:
+            reward = agent.run_episode(env, epsilon, exploring_starts)
             
         if reward == 1:
             wins += 1
