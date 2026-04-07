@@ -7,6 +7,7 @@ from environment import Environment
 import math 
 
 
+
 #Helper function to initialise Q-table
 def initialise_q_table():
         '''
@@ -80,10 +81,10 @@ def run_episodes(agent, config, num_episodes=100000):
     if isinstance(agent, DoubleQLearningAgent):
         avg_q_table = get_average_q_table(agent.q_table, agent.q_table_B)
         visited_pairs, num_visited_pairs = get_visited_pairs_and_count(agent.count_table)
-        return history, avg_q_table, num_visited_pairs, visited_pairs
+        return history, avg_q_table, agent.count_table, visited_pairs, num_visited_pairs
     else:
         visited_pairs, num_visited_pairs = get_visited_pairs_and_count(agent.count_table)
-        return history, agent.q_table, num_visited_pairs, visited_pairs
+        return history, agent.q_table, agent.count_table, visited_pairs, num_visited_pairs
 
 def get_visited_pairs_and_count(count_table):
     '''
@@ -99,39 +100,4 @@ def get_visited_pairs_and_count(count_table):
     return visited_pairs, len(visited_pairs)
 
 if __name__ == "__main__":
-    
-    print("Running Double Q-Learning Agent with epsilon=0.1\n")
-    agent = DoubleQLearningAgent({}, {}, {})
-    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "fixed_0.1", num_episodes=100000)
-    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
-    print(f"Visited state-action pairs: {visited_pairs}")
-    print(f"\n\n\n\nHistory: {history}")
- 
-    agent = SarsaAgent({}, {})
-    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "fixed_0.1", num_episodes=100000)
-    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
-    print(f"Visited state-action pairs: {visited_pairs}")
-    print(f"\n\n\n\nHistory: {history}")
-
-
-    print("\nRunning Double Q-Learning Agent with epsilon=1_over_k\n")
-    agent = DoubleQLearningAgent({}, {}, {})
-    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "1_over_k", num_episodes=100000)
-    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
-    print(f"Visited state-action pairs: {visited_pairs}")
-    print(f"\n\n\n\nHistory: {history}")
-    
-    print("\nRunning Q-Learning Agent with epsilon=1_over_k\n")
-    agent = QLearningAgent({}, {})
-    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "1_over_k", num_episodes=100000)
-    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
-    print(f"Visited state-action pairs: {visited_pairs}")
-    print(f"\n\n\n\nHistory: {history}")
-
-    print("\nRunning MC Agent with epsilon=1_over_k\n")
-    agent = MonteCarloAgent({}, {})
-    history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "1_over_k", num_episodes=100000)
-    print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
-    print(f"Visited state-action pairs: {visited_pairs}")
-    print(f"\n\n\n\nHistory: {history}")
-
+    pass
