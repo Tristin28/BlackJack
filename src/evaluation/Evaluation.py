@@ -124,6 +124,7 @@ def average_results(history):
 
     mean_wins = sum(x[1] for x in last_10) / 10
     mean_losses = sum(x[2] for x in last_10) / 10
+    mean_draws = sum(x[3] for x in last_10) / 10
     advantage_of_dealer = (mean_losses - mean_wins) / (mean_losses + mean_wins)
 
-    return mean_wins, mean_losses, advantage_of_dealer
+    return mean_wins, mean_losses, mean_draws, advantage_of_dealer
