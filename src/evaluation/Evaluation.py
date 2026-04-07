@@ -63,7 +63,7 @@ def run_episodes(agent, config, num_episodes=100000, exploring_starts=False):
                 agent.increment_count(state, action)
                 agent.update_q_value(state, action, reward)
         else:
-            reward = agent.run_episode(env, epsilon, exploring_starts)
+            reward = agent.run_episode(env, epsilon)
             
         if reward == 1:
             wins += 1
@@ -97,6 +97,3 @@ def get_visited_pairs_and_count(count_table):
                 visited_pairs.append((state, action))
 
     return visited_pairs, len(visited_pairs)
-
-if __name__ == "__main__":
-    pass
