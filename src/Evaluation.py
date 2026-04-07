@@ -6,8 +6,6 @@ from agent.DoubleQLearningAgent import DoubleQLearningAgent, get_average_q_table
 from Environment import Environment
 import math 
 
-
-
 #Helper function to initialise Q-table
 def initialise_q_table():
         '''
