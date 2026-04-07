@@ -130,7 +130,3 @@ def average_results(history):
     advantage_of_dealer = (mean_losses - mean_wins) / (mean_losses + mean_wins)
 
     return mean_wins, mean_losses, advantage_of_dealer
-
-if __name__ == "__main__":
-    pass
-
