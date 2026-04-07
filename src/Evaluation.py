@@ -106,8 +106,7 @@ if __name__ == "__main__":
     print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
     print(f"Visited state-action pairs: {visited_pairs}")
     print(f"\n\n\n\nHistory: {history}")
-
-
+ 
     agent = SarsaAgent({}, {})
     history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "fixed_0.1", num_episodes=100000)
     print(f"\nNumber of visited state-action pairs: {num_visited_pairs}\n\n") 
@@ -122,9 +121,6 @@ if __name__ == "__main__":
     print(f"Visited state-action pairs: {visited_pairs}")
     print(f"\n\n\n\nHistory: {history}")
     
-    
-    
-
     print("\nRunning Q-Learning Agent with epsilon=1_over_k\n")
     agent = QLearningAgent({}, {})
     history, q_table, num_visited_pairs, visited_pairs = run_episodes(agent, "1_over_k", num_episodes=100000)
