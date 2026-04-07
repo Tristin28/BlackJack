@@ -4,7 +4,10 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import matplotlib.pyplot as plt
-from agent import DoubleQLearningAgent, MonteCarloAgent, QLearningAgent, SarsaAgent
+from agent.MonteCarloAgent import MonteCarloAgent
+from agent.QLearningAgent import QLearningAgent
+from agent.DoubleQLearningAgent import DoubleQLearningAgent
+from agent.SarsaAgent import SarsaAgent
 from evaluation.Evaluation import run_episodes
 
 def ensure_output_dir(output_dir="plots"):
