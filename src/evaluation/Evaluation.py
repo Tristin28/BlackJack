@@ -98,5 +98,39 @@ def get_visited_pairs_and_count(count_table):
 
     return visited_pairs, len(visited_pairs)
 
+
+def get_optimal_policy(q_table):
+    optimal_policy = {}
+    for state in q_table:
+        best_action = max(q_table[state], key=q_table[state].get)
+        optimal_policy[state] = best_action
+    return optimal_policy
+
+def build_strategy_table(optimal_policy, usable_ace=False):
+    '''
+        As required columns respond to dealer card (where A=11) and rows respond to player sum.
+        Note that usable_ace has to be set to either True or False to generate 2 tables (it is initially set to false)
+    '''
+    strategy_table = []
+    for player_sum in range(20,11,-1):
+        row = []
+        for dealer_card in range(2, 12):
+            state = (player_sum, dealer_card, usable_ace)
+            row.append("H" if optimal_policy[state] == "HIT" else "S")
+        strategy_table.append(row)
+    return strategy_table
+
+def average_results(history):
+    '''
+        This method computes the average over how many wins/losses the agent had in the last 10,000 episodes
+    '''
+    last_10 = history[-10:]
+
+    mean_wins = sum(x[1] for x in last_10) / 10
+    mean_losses = sum(x[2] for x in last_10) / 10
+    advantage_of_dealer = (mean_losses - mean_wins) / (mean_losses + mean_wins)
+
+    return mean_wins, mean_losses, advantage_of_dealer
+
 if __name__ == "__main__":
     pass

@@ -1,6 +1,5 @@
 import os
 import matplotlib.pyplot as plt
-
 from agent import DoubleQLearningAgent, MonteCarloAgent, QLearningAgent, SarsaAgent
 from evaluation.Evaluation import run_episodes
 
