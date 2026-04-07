@@ -1,7 +1,4 @@
-from agent.BaseAgent import BaseAgent
 from agent.MonteCarloAgent import MonteCarloAgent
-from agent.SarsaAgent import SarsaAgent
-from agent.QLearningAgent import QLearningAgent
 from agent.DoubleQLearningAgent import DoubleQLearningAgent, get_average_q_table
 from Environment import Environment
 import math 

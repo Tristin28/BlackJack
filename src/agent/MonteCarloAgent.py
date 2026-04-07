@@ -34,18 +34,3 @@ class MonteCarloAgent(BaseAgent):
             state = next_state
 
         return episode_trace, environment_instance.reward
-
-        """
-        This is how the training loop would look like in the main function:
-
-        for k in range(1, num_episodes + 1):
-        env = Environment()
-        epsilon = ... # configure epsilon decay as needed
-        episode_trace, reward = mc_agent.run_episode(env, epsilon, exploring_starts)
-
-        # Ever-visit approach:
-        for state, action in episode_trace:
-            mc_agent.increment_count(state, action)
-            mc_agent.update_q_value(state, action, reward)
-        """
-
