@@ -16,7 +16,7 @@ class MonteCarloAgent(BaseAgent):
         if exploring_starts and first_decision:
                  return random.choice(list(self.q_table[state].keys())), False
         
-        return super().choose_action(state, epsilon), False
+        return super().get_action(state, epsilon), False
 
     def run_episode(self, environment_instance, epsilon, exploring_starts=False):
         state = environment_instance.get_state()
