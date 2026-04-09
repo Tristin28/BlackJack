@@ -116,6 +116,7 @@ def build_strategy_table(optimal_policy, usable_ace=False):
         strategy_table.append(row)
     return strategy_table
 
+""" Not Needed:
 def average_results(history):
     '''
         This method computes the average over how many wins/losses the agent had in the last 10,000 episodes
@@ -128,3 +129,4 @@ def average_results(history):
     advantage_of_dealer = (mean_losses - mean_wins) / (mean_losses + mean_wins)
 
     return mean_wins, mean_losses, mean_draws, advantage_of_dealer
+"""

@@ -1,0 +1,5 @@
+Configuration,Mean Wins,Mean Losses,Mean Draws,Dealer Advantage
+Exploring Starts (1/k),353.5000,584.8000,61.7000,0.246510
+No ES (1/k),412.5000,512.1000,75.4000,0.107722
+No ES (exp/1000),413.1000,508.6000,78.3000,0.103613
+No ES (exp/10000),425.7000,492.3000,82.0000,0.072549
