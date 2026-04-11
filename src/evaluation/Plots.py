@@ -348,6 +348,34 @@ def plot_state_action_counts_top_n(count_table, algorithm_name, config_name, top
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, f"{safe_name(algorithm_name)}_{safe_name(config_name)}_top_{top_n}_state_action_counts.png"))
     plt.close()
+    
+def plot_all_algorithms_unique_pairs_grid(all_unique_counts, output_dir="plots"):
+    """
+    all_unique_counts example:
+    {
+        "MonteCarlo": {"Exploring Starts (1/k)": 358, "No ES (1/k)": 343, ...},
+        "SARSA": {"0.1": 359, "1/k": 341, ...},
+        "QLearning": {"0.1": 358, "1/k": 344, ...},
+        "DoubleQLearning": {"0.1": 359, "1/k": 342, ...}
+    }
+    """
+    os.makedirs(output_dir, exist_ok=True)
+
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+    axes = axes.flatten()
+
+    for ax, (algorithm_name, unique_counts_by_config) in zip(axes, all_unique_counts.items()):
+        config_names = list(unique_counts_by_config.keys())
+        counts = list(unique_counts_by_config.values())
+
+        ax.bar(config_names, counts)
+        ax.set_title(f"{algorithm_name}: Unique State-Action Pairs Across Configurations")
+        ax.set_ylabel("Number of Unique State-Action Pairs")
+        ax.tick_params(axis="x", rotation=20)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "all_algorithms_unique_pairs_grid.png"))
+    plt.close()
 
 def evaluate_algorithm(algorithm_name, agent_factory, configs, num_episodes=100000, output_dir="plots"):
     unique_counts_by_config = {}
@@ -408,7 +436,7 @@ def evaluate_algorithm(algorithm_name, agent_factory, configs, num_episodes=1000
     # Additional summary plot
     plot_combined_histories(histories_by_config, algorithm_name, output_paths["additional_combined_histories"])
 
-    return summary_by_config
+    return summary_by_config, unique_counts_by_config
 
 if __name__ == "__main__":
     NUM_EPISODES = 100000
@@ -429,8 +457,9 @@ if __name__ == "__main__":
     ]
 
     all_summaries = {}
+    all_unique_counts = {}
 
-    all_summaries["MonteCarlo"] = evaluate_algorithm(
+    all_summaries["MonteCarlo"], all_unique_counts["MonteCarlo"] = evaluate_algorithm(
         "MonteCarlo",
         lambda: MonteCarloAgent({}, {}),
         mc_configs,
@@ -438,7 +467,7 @@ if __name__ == "__main__":
         output_dir=OUTPUT_DIR
     )
 
-    all_summaries["SARSA"] = evaluate_algorithm(
+    all_summaries["SARSA"], all_unique_counts["SARSA"] = evaluate_algorithm(
         "SARSA",
         lambda: SarsaAgent({}, {}),
         td_configs,
@@ -446,7 +475,7 @@ if __name__ == "__main__":
         output_dir=OUTPUT_DIR
     )
 
-    all_summaries["QLearning"] = evaluate_algorithm(
+    all_summaries["QLearning"], all_unique_counts["QLearning"] = evaluate_algorithm(
         "QLearning",
         lambda: QLearningAgent({}, {}),
         td_configs,
@@ -454,7 +483,7 @@ if __name__ == "__main__":
         output_dir=OUTPUT_DIR
     )
 
-    all_summaries["DoubleQLearning"] = evaluate_algorithm(
+    all_summaries["DoubleQLearning"], all_unique_counts["DoubleQLearning"] = evaluate_algorithm(
         "DoubleQLearning",
         lambda: DoubleQLearningAgent({}, {}, {}),
         td_configs,
@@ -463,4 +492,5 @@ if __name__ == "__main__":
     )
 
     final_output_paths = build_output_dirs(OUTPUT_DIR)
+    plot_all_algorithms_unique_pairs_grid(all_unique_counts, final_output_paths["additional"])
     plot_global_dealer_advantage(all_summaries, final_output_paths["required_bar_charts"])

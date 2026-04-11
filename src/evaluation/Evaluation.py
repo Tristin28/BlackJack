@@ -115,18 +115,3 @@ def build_strategy_table(optimal_policy, usable_ace=False):
             row.append("H" if optimal_policy[state] == "HIT" else "S")
         strategy_table.append(row)
     return strategy_table
-
-""" Not Needed:
-def average_results(history):
-    '''
-        This method computes the average over how many wins/losses the agent had in the last 10,000 episodes
-    '''
-    last_10 = history[-10:]
-
-    mean_wins = sum(x[1] for x in last_10) / 10
-    mean_losses = sum(x[2] for x in last_10) / 10
-    mean_draws = sum(x[3] for x in last_10) / 10
-    advantage_of_dealer = (mean_losses - mean_wins) / (mean_losses + mean_wins)
-
-    return mean_wins, mean_losses, mean_draws, advantage_of_dealer
-"""

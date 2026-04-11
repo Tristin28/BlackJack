@@ -1,10 +1,10 @@
 Player Sum,2,3,4,5,6,7,8,9,10,A
 20,S,S,S,S,S,S,S,S,S,S
 19,S,S,S,S,S,S,S,S,S,S
-18,S,S,S,S,S,S,S,S,S,H
-17,S,S,S,H,S,S,S,S,S,S
-16,S,H,S,S,S,S,S,H,S,S
-15,S,S,H,S,S,S,H,S,S,S
-14,S,S,S,S,H,H,S,S,S,S
-13,S,S,S,S,H,S,S,S,S,S
-12,S,S,S,H,S,S,S,S,S,S
+18,H,S,S,S,S,S,S,S,S,S
+17,S,S,S,S,S,S,S,S,S,S
+16,S,S,H,S,S,S,H,S,S,H
+15,H,S,H,H,S,H,S,S,S,S
+14,S,S,S,S,S,S,S,H,S,S
+13,S,S,S,S,S,H,H,S,S,S
+12,S,S,S,S,H,S,S,H,S,S
